@@ -1,2 +1,2 @@
 # PowershellSharedScripts
-Some Powershell scripts and functions
+Some Powershell scripts, functions and snippets with stuff I tend to forget otherwise...
