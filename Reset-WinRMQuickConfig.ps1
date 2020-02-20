@@ -49,7 +49,8 @@ function Reset-WinRMQuickConfig {
     #endregion
 
     #region check firewall for Windows Remote Management Exception. If present, disable it.
-    $FWRule = (Get-NetFirewallRule | Where-Object { $_.Name -eq "WINRM-HTTP-In-TCP" -or $_.Name -eq "WINRM-HTTP-In-TCP-Public" })
+    $FWRule = (Get-NetFirewallRule |
+    Where-Object { $_.Name -eq "WINRM-HTTP-In-TCP" -or $_.Name -eq "WINRM-HTTP-In-TCP-Public" })
 
     if ($FWRule -eq $null) {
         Write-Information -MessageData "No WinRM Firewall Rules configured"
