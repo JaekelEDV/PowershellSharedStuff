@@ -26,7 +26,7 @@
 #Requires -RunAsAdministrator
 
 #region Function stopping the services
-function Repair-UpdateServices {
+function Stop-MyUpdateServices {
 
     [CmdletBinding()]
     param ()
@@ -42,10 +42,10 @@ function Repair-UpdateServices {
 function Rename-MyFolders {
     [CmdletBinding()]
     param ()
-    $SoftwareDistribution = "C:\Windows\SoftwareDistribution"
-    $catroot2 = "C:\Windows\System32\catroot2"
-    Rename-Item $SoftwareDistribution -NewName "SoftwareDistribution.old"
-    Rename-Item $catroot2 -NewName "catroot2.old"
+    $SoftwareDistribution = "$ENV:SYSTEMROOT\SoftwareDistribution"
+    $catroot2 = "$ENV:SYSTEMROOT\System32\catroot2"
+    Rename-Item $SoftwareDistribution -NewName "SoftwareDistribution.old" -Force
+    Rename-Item $catroot2 -NewName "Catroot2.old" -Force
 }
 #endregion
 
@@ -56,7 +56,7 @@ function Start-MyUpdateServices {
     $svc = Get-Service -Name "wuauserv", "cryptSvc", "BITS", "msiserver"
     $svc |
     Where-Object{ $_.status -eq 'Stopped' } |
-    Start-Service -Force
+    Start-Service
     $svc
 }
 #endregion
