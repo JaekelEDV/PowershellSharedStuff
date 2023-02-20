@@ -47,7 +47,7 @@
         'C:\Program Files (x86)*'
 
     .LINK
-        TODO: Online version: https://github.com/JaekelEDV/
+        Online version: https://github.com/JaekelEDV/PowershellSharedStuff/blob/master/Get-InstalledSoftware.ps1
 
     .NOTES
         File Name: Get-InstalledSoftware.ps1
