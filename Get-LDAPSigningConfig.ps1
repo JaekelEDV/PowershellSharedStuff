@@ -105,3 +105,4 @@ Write-Host "Be aware: this script only checks for some events and registry entri
 Write-Host "https://support.microsoft.com/en-us/help/4520412/2020-ldap-channel-binding-and-ldap-signing-requirements-for-windows" -ForegroundColor Magenta
 
 
+Get-WinEvent -FilterHashTable @{LogName='Directory Service';ID='2887','2888','2889' } | Format-List
