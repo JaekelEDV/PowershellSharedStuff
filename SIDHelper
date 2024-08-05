@@ -1,0 +1,128 @@
+function Show-Menu
+{
+    param(
+        [string]$Title = 'What you wanna know?'
+    )
+    Write-Host ""
+    Write-Host "==========$Title=========" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "1: Get SID for Domain User"
+    Write-Host "2: Get Name for SID"
+    Write-Host "3: Get SID for Local User"
+    Write-Host "4: Get All Domain User with SIDs"
+    Write-Host "5: Get-All Domain Groups with SID"
+    Write-Host "6: Get All Local User with SIDs"
+    Write-Host "7: Get All Local Groups with SIDs"
+    Write-Host "8: Get SIDInfo (User, Computer or Group?)"
+    Write-Host ""
+    Write-Host "Q: Press 'Q' to quit!" -ForegroundColor Red
+}
+
+function Get-SID4DomUser
+{
+    param (
+        [string]$domain,
+        [string]$user
+    )
+    #Domain User to SID
+    $domain = Read-Host "Please enter the Domainname!"
+    $user = Read-Host "Please enter the Username!"
+    $objUser = New-Object System.Security.Principal.NTAccount("$domain", "$user")
+    $SID = $objUser.Translate([System.Security.Principal.SecurityIdentifier])
+    Write-Host "The SID for"$domain"\"$user" is "$SID"" -ForegroundColor Green
+}
+
+function Get-DomainUser4SID
+{
+    #SID to DomainUser
+    $SID = Read-Host "Please enter the SID!"
+    $objSID = New-Object System.Security.Principal.SecurityIdentifier ("$SID")
+    $objUser = $objSID.Translate( [System.Security.Principal.NTAccount])
+    Write-Host "The Name for "$SID is "$objUser" -ForegroundColor Green
+}
+
+function Get-SID4LocalUser
+{
+    #Local User to SID
+    $LocalUsername = Read-Host "Please enter the local Username!"
+    $objUser = New-Object System.Security.Principal.NTAccount ("$LocalUsername")
+    $SID = $objUser.Translate([System.Security.Principal.SecurityIdentifier])
+    Write-Host "The SID for "$LocalUsername is "$SID" -ForegroundColor Green
+}
+
+function Get-AllDomUserWithSID
+{
+    #List all Domain Users with SIDs
+    $AllDomUsers = Get-ADUser -Filter * | Select-Object -Property Name, SID | Sort-Object -Property Name
+    $AllDomUsers | Out-Host
+}
+
+function Get-AllDomGroupWithSID
+{
+    #List all Domain Groups with SIDs
+    $AllGroup = Get-ADGroup -Filter * | Select-Object -Property Name, SID | Sort-Object -Property Name
+    $AllGroup | Out-Host
+}
+
+function Get-AllLocalUserWithSID
+{
+    #List all local Users with SIDs
+    $AllLocalUsers = Get-LocalUser | Select-Object -Property Name, SID | Sort-Object -Property Name
+    $AllLocalUsers | Out-Host
+}
+
+function Get-AllLocalGroupWithSID
+{
+    #List all local Groups with SIDs
+    $AllLocalGroups = Get-LocalGroup | Select-Object -Property Name, SID | Sort-Object -Property Name
+    $AllLocalGroups | Out-Host
+}
+
+function Get-SIDInfo
+{
+    param(
+        [string]$SID
+    )
+    ##Have a SID but no idea if it's a user, group or computer? Try this:
+    $SID = Read-Host "Please enter SID!"
+    $ObjClass = Get-ADObject -Filter "objectSid -eq '$SID'" -Properties * | Select-Object Name, ObjectClass
+    $ObjClass | Out-Host
+}
+
+do
+{
+    Show-Menu
+    Write-Host ""
+    $userinput = Read-Host "Please make a selection!"
+    switch ($userinput)
+    {
+        '1'
+        { Get-SID4DomUser
+        }
+        '2'
+        { Get-DomainUser4SID
+        }
+        '3'
+        { Get-SID4LocalUser
+        }
+        '4'
+        { Get-AllDomUserWithSID
+        }
+        '5'
+        { Get-AllDomGroupWithSID
+        }
+        '6'
+        { Get-AllLocalUserWithSID
+        }
+        '7'
+        { Get-AllLocalGroupWithSID
+        }
+        '8'
+        { Get-SIDInfo
+        }
+        'q'
+        { return
+        }
+    }
+}
+until ($userinput -eq 'q')
